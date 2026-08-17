@@ -1,0 +1,88 @@
+{#include base}
+{#title}Dashboard{/title}
+{#content}
+
+{#if flag:enabled('dashboard.announcement', true)}
+<div class="alert alert-info d-flex align-items-center" role="alert">
+    <div>Quarkus Insights is live! Join the Q&amp;A during the session.</div>
+</div>
+{/if}
+
+{#if flag:enabled('dashboard.insights-panel', false)}
+<div class="card mb-4 border-primary">
+    <div class="card-body">
+        <h2 class="h5 card-title d-flex align-items-center gap-2">
+            Insights <span class="badge text-bg-primary">Beta</span>
+        </h2>
+        <p class="card-text text-muted mb-0">
+            You're in the gradual rollout of the new Insights panel!
+        </p>
+    </div>
+</div>
+{/if}
+
+<h2 class="h5 mb-3">Feature flag tips</h2>
+<div class="list-group mb-4">
+    {#for tip in tips}
+    <div class="list-group-item d-flex gap-2">
+        <span class="text-primary fw-bold">#{tip_count}</span>
+        <span>{tip}</span>
+    </div>
+    {#else}
+    <div class="list-group-item text-muted">No tips to show right now.</div>
+    {/for}
+</div>
+
+{#if admin}
+<div class="admin-only">
+    <span class="badge text-bg-warning mb-2">Admin</span>
+    <h2 class="h5 mb-3">Config</h2>
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <span class="text-muted">Announcement banner:
+            <strong>{#if flag:enabled('dashboard.announcement', true)}ON{#else}OFF{/if}</strong></span>
+        <form method="post" action="/dashboard/announcement/toggle" class="m-0">
+            <button type="submit" class="btn btn-sm btn-outline-primary">
+                {#if flag:enabled('dashboard.announcement', true)}Turn off{#else}Turn on{/if}
+            </button>
+        </form>
+    </div>
+    <form method="post" action="/dashboard/insights-panel/rollout"
+          class="d-flex align-items-center gap-2 mb-3">
+        <label for="rollout" class="text-muted m-0">Insights panel rollout:</label>
+        <input type="number" id="rollout" name="percentage" min="1" max="99"
+               value="{rolloutPercentage}" class="form-control form-control-sm" style="width: 5rem">
+        <span class="text-muted">%</span>
+        <button type="submit" class="btn btn-sm btn-outline-primary">Set</button>
+    </form>
+    <form method="post" action="/dashboard/tips/count"
+          class="d-flex align-items-center gap-2 mb-3">
+        <label for="tips" class="text-muted m-0">Tips shown:</label>
+        <input type="number" id="tips" name="count" min="0" value="{tipsShown}"
+               class="form-control form-control-sm" style="width: 5rem">
+        <button type="submit" class="btn btn-sm btn-outline-primary">Set</button>
+    </form>
+    <h2 class="h5 mb-3">Users</h2>
+    <table class="table table-striped align-middle mb-0">
+        <thead>
+            <tr>
+                <th scope="col">Username</th>
+                <th scope="col">Roles</th>
+                <th scope="col">Timezone</th>
+                <th scope="col">Current Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#for user in users}
+            <tr>
+                <td>{user.username}</td>
+                <td>{user.roles}</td>
+                <td>{user.timezone}</td>
+                <td>{user.localTime}</td>
+            </tr>
+            {/for}
+        </tbody>
+    </table>
+</div>
+{/if}
+
+{/content}

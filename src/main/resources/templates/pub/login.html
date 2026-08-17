@@ -1,0 +1,20 @@
+{#include base}
+
+{#title}Sign in{/title}
+
+{#content}
+
+<form method="post" action="/login_security_check" class="row g-3 w-25">
+  <div class="mb-3">
+    <label for="inputUsername" class="form-label">Username</label>
+    <input type="text" class="form-control" id="inputUsername" name="username" value="">
+  </div>
+   <div class="mb-3">
+    <label for="inputPassword" class="form-label">Password</label>
+    <input type="password" class="form-control" id="inputPassword" name="password" value="">
+  </div>
+  <div class="mb-3">
+    <button type="submit" class="btn btn-secondary">Sign in</button>
+  </div>
+</form>
+{/content}

@@ -1,0 +1,93 @@
+/*
+ * Light theme - built on the official Quarkus brand palette (https://quarkus.io/brand/).
+ * Quarkus Blue #4695EB, Quarkus Dark Blue #0D1C2C, Quarkus Red #FF004A, Quarkus Orange #F18F01.
+ */
+:root {
+    --quarkus-blue: #4695eb;
+    --quarkus-dark-blue: #0d1c2c;
+    --quarkus-red: #ff004a;
+    --quarkus-orange: #f18f01;
+
+    /* map the Quarkus accent onto Bootstrap's primary + link tokens */
+    --bs-primary: var(--quarkus-blue);
+    --bs-primary-rgb: 70, 149, 235;
+    --bs-link-color: #2f7fd6;
+    --bs-link-color-rgb: 47, 127, 214;
+    --bs-link-hover-color: #1f5fa8;
+    --bs-link-hover-color-rgb: 31, 95, 168;
+}
+
+body {
+    background-color: #eef2f8;
+    color: var(--quarkus-dark-blue);
+    font-family: 'Roboto', system-ui, sans-serif;
+}
+
+.main-container {
+    max-width: 960px;
+    margin: 2.5rem auto;
+    padding: 2rem 2.5rem;
+    background-color: #ffffff;
+    border: 1px solid #dce3ec;
+    border-top: 5px solid var(--quarkus-red);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(13, 28, 44, 0.08);
+}
+
+.main-container h1 {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #dce3ec;
+    color: var(--quarkus-dark-blue);
+    font-weight: 500;
+}
+
+/* Quarkus horizontal logo (default variant for light backgrounds) with brand clear space. */
+.brand-logo {
+    height: 40px;
+    margin: 0.25rem 0;
+}
+
+a {
+    color: #2f7fd6;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--quarkus-blue);
+    --bs-btn-border-color: var(--quarkus-blue);
+    --bs-btn-hover-bg: #2f7fd6;
+    --bs-btn-hover-border-color: #2f7fd6;
+    --bs-btn-active-bg: #2f7fd6;
+    --bs-btn-active-border-color: #2f7fd6;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: #2f7fd6;
+    --bs-btn-border-color: var(--quarkus-blue);
+    --bs-btn-hover-bg: var(--quarkus-blue);
+    --bs-btn-hover-border-color: var(--quarkus-blue);
+    --bs-btn-active-bg: var(--quarkus-blue);
+    --bs-btn-active-border-color: var(--quarkus-blue);
+}
+
+.table {
+    --bs-table-border-color: #dce3ec;
+    --bs-table-striped-bg: rgba(70, 149, 235, 0.06);
+    --bs-table-hover-bg: rgba(70, 149, 235, 0.11);
+}
+
+/* Admin-only sections are set apart with a Quarkus Orange accent. */
+.admin-only {
+    border-left: 4px solid var(--quarkus-orange);
+    background-color: rgba(241, 143, 1, 0.08);
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+footer {
+    max-width: 960px;
+    margin: 0 auto 2.5rem;
+    padding: 0 2.5rem;
+    color: #6b7c90;
+}
