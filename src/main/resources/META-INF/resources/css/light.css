@@ -30,7 +30,7 @@ body {
     background-color: #ffffff;
     border: 1px solid #dce3ec;
     border-top: 5px solid var(--quarkus-red);
-    border-radius: 12px;
+    border-radius: 2px 2px 12px 12px;
     box-shadow: 0 4px 20px rgba(13, 28, 44, 0.08);
 }
 

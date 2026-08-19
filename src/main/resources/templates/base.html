@@ -12,7 +12,6 @@
     {/insert}
     <link rel="stylesheet" href="/css/{flag:string('theme','light')}.css">
     <title>Quarkus - Feature Flags Demo - {#insert title /}</title>
-    <script>{#insert js-head /}</script>
 </head>
 
 <body>
@@ -29,14 +28,14 @@
             </div>
             {/if}
         </div>
-        <div class="text-muted text-uppercase small fw-semibold mb-5">Feature Flags Demo</div>
+        <div class="text-muted small fw-semibold mb-5">Feature Flags Demo</div>
         <h1>{#insert title /}</h1>
         {#insert content /}
     </div>
 
     <footer>
-        <small>
-            <!-- footer TODO -->
+        <small class="text-muted">
+            Powered by <a href="https://docs.quarkiverse.io/quarkus-flags/dev/">quarkus-flags</a>
         </small>
     </footer>
 

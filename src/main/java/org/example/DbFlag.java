@@ -20,8 +20,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
  * (e.g. {@code flags.isEnabled("...")} or {@code {flag:enabled('...')}} in Qute).
  * <p>
  * The value is a plain string interpreted on demand; for a kill switch store {@code "true"} /
- * {@code "false"} and toggle the row to enable/disable the gated content at runtime (the flags
- * cache is disabled by default, so changes take effect immediately).
+ * {@code "false"} and toggle the row to enable/disable the gated content at runtime. This app
+ * enables the flags cache in production (see {@code quarkus.flags.cache.*}), so admin actions
+ * invalidate the cache after changing a row to make the change take effect immediately.
  */
 @FlagSource
 @Entity

@@ -12,8 +12,9 @@ import jakarta.transaction.Transactional;
 public class AppInit {
 
     /**
-     * The kill switch guarding the dashboard announcement banner. Read in {@code pub/dashboard.html}
-     * via {@code {flag:enabled('dashboard.announcement')}}. Flip the {@link DbFlag} row to
+     * The kill switch guarding the dashboard announcement banner. Read in
+     * {@code DashboardResource/dashboard.html} via
+     * {@code {flag:enabled('dashboard.announcement', true)}}. Flip the {@link DbFlag} row to
      * {@code "false"} to hide the banner without a redeploy.
      */
     public static final String ANNOUNCEMENT = "dashboard.announcement";
