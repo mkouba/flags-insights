@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 
 import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.response.Response;
 
 /**
  * Verifies the form-authentication logout flow: after logging in and obtaining a session cookie,
@@ -17,28 +16,21 @@ import io.restassured.response.Response;
 @QuarkusTest
 public class LogoutTest {
 
-    private static final String COOKIE = "insights-flags-credentials";
-
     @Test
     void logoutRedirectsToLoginAndClearsCookie() {
         // Log in via the form security check to obtain a session cookie.
-        Response login = given()
-                .redirects().follow(false)
-                .formParam("username", "eiko")
-                .formParam("password", "eiko")
-                .when().post("/login_security_check");
-        String sessionCookie = login.cookie(COOKIE);
+        String sessionCookie = FormLogin.sessionCookie("eiko", "eiko");
         assertNotNull(sessionCookie, "expected a session cookie after login");
 
         // Logging out clears the cookie (Max-Age 0) and redirects to the login page.
         given()
                 .redirects().follow(false)
-                .cookie(COOKIE, sessionCookie)
+                .cookie(FormLogin.COOKIE, sessionCookie)
                 .when().post("/logout")
                 .then()
                 .statusCode(303)
                 .header("Location", containsString("/login"))
-                .cookie(COOKIE, ""); // cleared value
+                .cookie(FormLogin.COOKIE, ""); // cleared value
     }
 
     @Test

@@ -46,7 +46,7 @@ public class AdminDashboardTest {
     @Test
     void regularUserSeesNeitherUsersTableNorControls() {
         given()
-                .auth().preemptive().basic("eiko", "eiko")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("eiko", "eiko"))
                 .when().get("/dashboard")
                 .then()
                 .statusCode(200)
@@ -74,7 +74,7 @@ public class AdminDashboardTest {
     @Test
     void adminCanChangeTheRolloutPercentage() {
         given()
-                .auth().preemptive().basic("admin", "admin")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("admin", "admin"))
                 .redirects().follow(false)
                 .formParam("percentage", 55)
                 .when().post("/dashboard/insights-panel/rollout")
@@ -88,7 +88,7 @@ public class AdminDashboardTest {
     @Test
     void adminCanChangeTheTipsCount() {
         given()
-                .auth().preemptive().basic("admin", "admin")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("admin", "admin"))
                 .redirects().follow(false)
                 .formParam("count", 6)
                 .when().post("/dashboard/tips/count")
@@ -102,7 +102,7 @@ public class AdminDashboardTest {
     @Test
     void regularUserCannotChangeTipsCount() {
         given()
-                .auth().preemptive().basic("eiko", "eiko")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("eiko", "eiko"))
                 .redirects().follow(false)
                 .formParam("count", 6)
                 .when().post("/dashboard/tips/count")
@@ -113,7 +113,7 @@ public class AdminDashboardTest {
     @Test
     void regularUserCannotToggle() {
         given()
-                .auth().preemptive().basic("eiko", "eiko")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("eiko", "eiko"))
                 .redirects().follow(false)
                 .when().post("/dashboard/announcement/toggle")
                 .then()
@@ -123,7 +123,7 @@ public class AdminDashboardTest {
     @Test
     void regularUserCannotChangeRollout() {
         given()
-                .auth().preemptive().basic("eiko", "eiko")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("eiko", "eiko"))
                 .redirects().follow(false)
                 .formParam("percentage", 55)
                 .when().post("/dashboard/insights-panel/rollout")
@@ -133,7 +133,7 @@ public class AdminDashboardTest {
 
     private static void toggleAnnouncement() {
         given()
-                .auth().preemptive().basic("admin", "admin")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("admin", "admin"))
                 .redirects().follow(false)
                 .when().post("/dashboard/announcement/toggle")
                 .then()
@@ -142,7 +142,7 @@ public class AdminDashboardTest {
 
     private static ValidatableResponse dashboardAsAdmin() {
         return given()
-                .auth().preemptive().basic("admin", "admin")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("admin", "admin"))
                 .when().get("/dashboard")
                 .then()
                 .statusCode(200);

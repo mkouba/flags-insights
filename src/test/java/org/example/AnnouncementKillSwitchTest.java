@@ -40,7 +40,7 @@ public class AnnouncementKillSwitchTest {
 
     private static ValidatableResponse dashboard() {
         return given()
-                .auth().preemptive().basic("eiko", "eiko")
+                .cookie(FormLogin.COOKIE, FormLogin.sessionCookie("eiko", "eiko"))
                 .when().get("/dashboard")
                 .then().statusCode(200);
     }
