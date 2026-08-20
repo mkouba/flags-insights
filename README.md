@@ -73,30 +73,41 @@ Things to try:
 
 The Quarkus **Dev UI** is available at <http://localhost:8080/q/dev/>.
 
-## Packaging and running the application
+## Run in JVM mode
+
+Build the app first:
 
 ```shell script
-./mvnw package
+./mvnw clean package
 ```
 
-Produces `target/quarkus-app/quarkus-run.jar`, runnable with
-`java -jar target/quarkus-app/quarkus-run.jar`. For an _über-jar_:
+Next, make sure you have a PostgreSQL database running.
+In production, Quarkus does not start a container for you like it does in Dev Mode.
+To set up a PostgreSQL database with Docker:
 
 ```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+docker run -it --rm=true --name quarkus_test -e POSTGRES_USER=quarkus_test -e POSTGRES_PASSWORD=quarkus_test -e POSTGRES_DB=quarkus_test -p 5432:5432 postgres:18
 ```
 
-## Creating a native executable
+Then run it:
 
 ```shell script
-./mvnw package -Dnative
+java -jar ./target/quarkus-app/quarkus-run.jar
+```
+
+## Run as a native application
+
+```shell script
+./mvnw clean package -Dnative
 ```
 
 Or, without a local GraalVM:
 
 ```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
+./mvnw clean package -Dnative -Dquarkus.native.container-build=true
 ```
+
+Then again, make sure you have a PostgreSQL database running.
 
 Then run `./target/insights-flags-1.0.0-SNAPSHOT-runner`. See
 <https://quarkus.io/guides/maven-tooling> for details.
