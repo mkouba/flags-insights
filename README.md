@@ -13,7 +13,7 @@ from both Java code and Qute templates.
 | Flag | Source | What it does | Evaluator |
 |------|--------|--------------|-----------|
 | `theme` | **Config** (`application.properties`, `quarkus.flags.build.*`) | Serves a dark or light CSS theme based on the **local time of the logged-in user** (dark from 21:00 to 06:00). | `ThemeFlagEvaluator` (custom `FlagEvaluator`) |
-| `dashboard.announcement` | **Database** (`DbFlag`, `@FlagSource`) | A **kill switch** for the announcement banner — an admin can turn it on/off at runtime, no redeploy. | – |
+| `dashboard.announcement` | **Database** (`DbFlag`, `@FlagSource`) | A **kill switch** for the announcement banner - an admin can turn it on/off at runtime, no redeploy. | – |
 | `dashboard.insights-panel` | **Database** (`DbFlag` + metadata) | A **gradual, per-user rollout** of the "Insights (Beta)" panel; an admin can raise the rollout percentage. | `UsernameRolloutFlagEvaluator` (from `quarkus-flags-security`) |
 | `dashboard.tips-shown` | **In-memory** (`@RegisterFlag` `int` field) | How many random feature-flag tips to show. The value is **read and changed directly in code** via a static field. | – |
 
@@ -39,7 +39,7 @@ Cross-cutting pieces worth pointing out during the talk:
 ./mvnw quarkus:dev
 ```
 
-Then open <http://localhost:8080/dashboard> — you'll be redirected to the login page.
+Then open <http://localhost:8080/dashboard> - you'll be redirected to the login page.
 
 ### Try it out
 
@@ -51,11 +51,17 @@ which drives the theme flag:
 | `admin` | `admin` | admin, user | system default |
 | `alice` | `alice` | user | Europe/Prague |
 | `bob` | `bob` | user | America/New_York |
+| `carlos` | `carlos` | user | America/Sao_Paulo |
+| `diana` | `diana` | user | Europe/London |
 | `eiko` | `eiko` | user | Asia/Tokyo |
+| `farah` | `farah` | user | Asia/Dubai |
+| `giovanni` | `giovanni` | user | Europe/Rome |
+| `hana` | `hana` | user | Asia/Seoul |
+| `ivan` | `ivan` | user | Europe/Moscow |
+| `julia` | `julia` | user | Europe/Berlin |
 | `kiri` | `kiri` | user | Pacific/Auckland |
-| … | | user | carlos, diana, farah, giovanni, hana, ivan, julia |
 
-Things to demonstrate:
+Things to try:
 
 - **Theme by time zone** — log in as `alice` (Prague, daytime → **light**) and `kiri` (Auckland, +10h,
   night → **dark**) at the same moment to see both themes and the matching Quarkus logo variant.
@@ -66,38 +72,6 @@ Things to demonstrate:
   the rollout.
 
 The Quarkus **Dev UI** is available at <http://localhost:8080/q/dev/>.
-
-## Project layout
-
-```
-src/main/java/org/example/
-  AppInit.java                    # seeds users and the database-backed flags at startup
-  User.java                       # security-jpa user entity (username, password, roles, timezone)
-  DashboardResource.java          # /dashboard + admin actions (type-safe Qute template records)
-  DbFlag.java                     # @FlagSource database flag entity (feature, value, metadata)
-  ThemeFlagEvaluator.java         # custom evaluator: dark/light from the user's local time
-  TimezoneIdentityAugmentor.java  # puts the user's time zone on the SecurityIdentity
-  TipsFlag.java / Tips.java       # @RegisterFlag int flag + the in-memory pool of tips
-  TemplateExtensions.java         # user:name / user:timezone / user:localTime Qute extensions
-  LogoutResource.java             # POST /logout
-src/main/resources/
-  application.properties          # auth, flag cache, the `theme` config flag
-  templates/                      # base.html, DashboardResource/dashboard.html, login pages
-  META-INF/resources/css/         # Quarkus-branded light.css / dark.css
-  META-INF/resources/images/      # Quarkus logos (light/dark variants)
-```
-
-## Testing
-
-```shell script
-./mvnw test
-```
-
-The tests cover the theme resolution logic and end-to-end rendering (`ThemeResolverTest`,
-`ThemeFlagTest`), the database kill switch (`AnnouncementKillSwitchTest`), the username rollout
-(`InsightsPanelRolloutTest`), the tip pool (`TipsTest`), the admin controls (`AdminDashboardTest`) and
-logout (`LogoutTest`). Tests use Dev Services (a PostgreSQL container), so a container runtime is
-required.
 
 ## Packaging and running the application
 
