@@ -21,7 +21,7 @@
                  src="/images/quarkus-horizontal-{flag:string('theme','light')}.svg">
             {#if user:authenticated}
             <div class="d-flex align-items-center gap-2">
-                <span class="text-muted">Signed in as <strong>{user:name}</strong>{#if user:timezone} <span class="badge text-bg-secondary">{user:timezone} · {user:localTime}</span>{/if}</span>
+                <span class="text-muted">Signed in as <strong>{user:name}</strong>{#if user:timezone} <span class="badge text-bg-primary">{user:timezone} · {user:localTime}</span>{/if}</span>
                 <form method="post" action="/logout" class="m-0">
                     <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button>
                 </form>
