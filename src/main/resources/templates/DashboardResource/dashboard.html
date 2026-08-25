@@ -51,7 +51,7 @@
     <form method="post" action="/dashboard/insights-panel/rollout"
           class="d-flex align-items-center gap-2 mb-3">
         <label for="rollout" class="text-muted m-0">Insights panel rollout:</label>
-        <input type="number" id="rollout" name="percentage" min="1" max="99"
+        <input type="number" id="rollout" name="percentage" min="0" max="100"
                value="{rolloutPercentage}" class="form-control form-control-sm" style="width: 5rem">
         <span class="text-muted">%</span>
         <button type="submit" class="btn btn-sm btn-outline-primary">Set</button>

@@ -77,7 +77,7 @@ public class DashboardResource {
     @Transactional
     public Response setInsightsRollout(@FormParam("percentage") int percentage) {
         // the rollout evaluator requires a percentage between 1 and 99 (inclusive)
-        int validPercentage = Math.max(1, Math.min(99, percentage));
+        int validPercentage = Math.max(0, Math.min(100, percentage));
         DbFlag flag = DbFlag.find("feature", AppInit.INSIGHTS_PANEL).firstResult();
         if (flag != null) {
             // managed entity: the element-collection change is flushed on commit

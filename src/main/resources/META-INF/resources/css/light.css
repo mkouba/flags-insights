@@ -34,17 +34,30 @@ body {
     box-shadow: 0 4px 20px rgba(13, 28, 44, 0.08);
 }
 
-.main-container h1 {
+/* Top navbar holding the app title and the authentication info. */
+.app-navbar {
+    padding-left: 0;
+    padding-right: 0;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
     border-bottom: 1px solid #dce3ec;
+}
+
+.app-navbar .app-title {
+    color: var(--quarkus-dark-blue);
+    text-transform: lowercase;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.page-title {
+    margin-bottom: 1.5rem;
     color: var(--quarkus-dark-blue);
     font-weight: 500;
 }
 
 /* Quarkus horizontal logo (default variant for light backgrounds) with brand clear space. */
 .brand-logo {
-    height: 40px;
+    height: 32px;
     margin: 0.25rem 0;
 }
 
@@ -90,4 +103,16 @@ footer {
     margin: 0 auto 2.5rem;
     padding: 0 2.5rem;
     color: #6b7c90;
+}
+
+/* Logo + app name on the left, "Powered by" pushed to the right. */
+.footer-brand {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+}
+
+.footer-brand .powered-by {
+    margin-left: auto;
 }
