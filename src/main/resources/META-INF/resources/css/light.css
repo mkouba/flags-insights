@@ -49,6 +49,12 @@ body {
     letter-spacing: 0.03em;
 }
 
+.app-title-icon {
+    color: var(--quarkus-dark-blue);
+    font-size: 1.4em;
+    line-height: 1;
+}
+
 .page-title {
     margin-bottom: 1.5rem;
     color: var(--quarkus-dark-blue);
