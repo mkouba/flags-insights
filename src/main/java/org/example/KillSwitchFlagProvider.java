@@ -4,19 +4,17 @@ import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-
-import org.jboss.logging.Logger;
-
 import io.quarkiverse.flags.BooleanValue;
 import io.quarkiverse.flags.Flag;
 import io.quarkiverse.flags.spi.FlagProvider;
-import io.quarkus.runtime.StartupEvent;
+import io.quarkus.logging.Log;
+import io.quarkus.runtime.Startup;
 import io.smallrye.common.annotation.Identifier;
 import io.smallrye.mutiny.Uni;
 import io.vertx.core.Vertx;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 /**
  * A custom {@link FlagProvider} whose flag value comes from the presence of a file on disk - a
@@ -37,9 +35,9 @@ import io.vertx.core.Vertx;
 @Singleton
 public class KillSwitchFlagProvider implements FlagProvider {
 
-    private static final Logger LOG = Logger.getLogger(KillSwitchFlagProvider.class);
-
-    /** The provider identifier, i.e. the {@code origin} (name) of this flag source. */
+    /**
+     * The provider identifier, i.e. the {@code origin} (name) of this flag source.
+     */
     public static final String ID = "insights.kill-switch";
 
     /** The feature exposed by this provider: the global HTTP kill switch. */
@@ -48,31 +46,36 @@ public class KillSwitchFlagProvider implements FlagProvider {
     /** The "big red button": while this file exists, all HTTP traffic is killed. */
     static final Path KILL_FILE = Path.of(System.getProperty("java.io.tmpdir"), "insights.kill");
 
-    /** How often the file is polled, in milliseconds. */
     private static final long POLL_INTERVAL_MS = 1000;
 
     @Inject
     Vertx vertx;
 
-    /** {@code true} while the kill-switch file exists; written by the poll, read once per request. */
     private volatile boolean killed;
+    private volatile long timerId;
 
-    void startWatching(@Observes StartupEvent event) {
-        LOG.infof("HTTP kill switch watching %s", KILL_FILE);
-        // poll once now so the initial state is correct, then on every tick
+    @Startup
+    void startWatching() {
+        Log.infof("HTTP kill switch watching %s", KILL_FILE);
         poll();
-        vertx.setPeriodic(POLL_INTERVAL_MS, id -> poll());
+        timerId = vertx.setPeriodic(POLL_INTERVAL_MS, id -> poll());
+    }
+
+    @PreDestroy
+    void stopWatching() {
+        vertx.cancelTimer(timerId);
+        Log.infof("HTTP kill switch stopped watching %s", KILL_FILE);
     }
 
     private void poll() {
         vertx.fileSystem().exists(KILL_FILE.toString())
                 .onSuccess(exists -> {
                     if (exists != killed) {
-                        LOG.infof("HTTP kill switch is now %s", exists ? "ON" : "OFF");
+                        Log.infof("HTTP kill switch is now %s", exists ? "ON" : "OFF");
                     }
                     killed = exists;
                 })
-                .onFailure(t -> LOG.warnf(t, "Unable to check the kill-switch file %s", KILL_FILE));
+                .onFailure(t -> Log.warnf(t, "Unable to check the kill-switch file %s", KILL_FILE));
     }
 
     @Override
@@ -87,7 +90,6 @@ public class KillSwitchFlagProvider implements FlagProvider {
 
     @Override
     public boolean isCacheable() {
-        // backed by an in-memory volatile field; caching would only add staleness, no benefit
         return false;
     }
 
