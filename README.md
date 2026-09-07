@@ -4,9 +4,9 @@ A small **Quarkus** demo app built for a talk about the Quarkiverse
 [**quarkus-flags**](https://docs.quarkiverse.io/quarkus-flags/dev/) extension.
 
 It's a mock "Quarkus Insights" dashboard whose behaviour and appearance are driven entirely by feature
-flags. The point of the demo is to show the same extension serving flags from **three different
-sources** (config, database, in-memory), plus **custom** and **security** flag evaluators, all read
-from both Java code and Qute templates.
+flags. The point of the demo is to show the same extension serving flags from **four different
+sources** (config, database, in-memory, filesystem), plus **custom** and **security** flag
+evaluators, all read from both Java code and Qute templates.
 
 ## What it demonstrates
 
@@ -16,6 +16,7 @@ from both Java code and Qute templates.
 | `dashboard.announcement` | **Database** (`DbFlag`, `@FlagSource`) | A **kill switch** for the announcement banner - an admin can turn it on/off at runtime, no redeploy. | – |
 | `dashboard.insights-panel` | **Database** (`DbFlag` + metadata) | A **gradual, per-user rollout** of the "Insights (Beta)" panel; an admin can raise the rollout percentage. | `UsernameRolloutFlagEvaluator` (from `quarkus-flags-security`) |
 | `dashboard.tips-shown` | **In-memory** (`@RegisterFlag` `int` field) | How many random feature-flag tips to show. The value is **read and changed directly in code** via a static field. | – |
+| `http.kill-switch` | **Filesystem** (`KillSwitchFlagProvider`, a custom `FlagProvider`) | A **global kill switch** for all HTTP traffic - touch a file (the "big red button") to return `503` for every request, delete it to recover. Enforced by a catch-all Vert.x route. | – |
 
 Cross-cutting pieces worth pointing out during the talk:
 
@@ -28,6 +29,12 @@ Cross-cutting pieces worth pointing out during the talk:
 - **`@RegisterFlag` read & write** — reading the static field returns the current flag value (the field
   read is rewritten at build time); assigning the field changes the value at runtime. The in-memory
   source isn't cached, so the change is visible immediately.
+- **Custom flag source + Vert.x route** — `KillSwitchFlagProvider` implements the `FlagProvider` SPI
+  directly, so the filesystem becomes a brand-new flag *source* next to config/database/in-memory. It
+  polls the "big red button" file off the event loop into a `volatile` field (so per-request reads
+  never block) and is not cacheable. `HttpKillSwitchRoute` registers a catch-all route via an
+  `@Observes Router` observer, runs before authentication, and returns a plain `503` when the switch
+  is on (failing open on any error so a flag glitch can't take the whole site down).
 - **Qute integration** — templates read flags directly with the `flag:` namespace, e.g.
   `{flag:enabled('dashboard.announcement', true)}` and `{flag:string('theme', 'light')}`.
 - **Flag cache** — enabled with a TTL in production (`quarkus.flags.cache.*`) and disabled for tests;
@@ -70,6 +77,9 @@ Things to try:
   with their current local time.
 - **Rollout** — bump the Insights rollout percentage and log in as different users to see who's now in
   the rollout.
+- **Kill switch** — press the "big red button" with `touch ${TMPDIR:-/tmp}/insights.kill` and reload:
+  every request (even the login page) returns `503`. Remove it with `rm ${TMPDIR:-/tmp}/insights.kill`
+  to bring the app back within a second.
 
 The Quarkus **Dev UI** is available at <http://localhost:8080/q/dev/>.
 
